@@ -15,7 +15,7 @@ before short option names.
 ## Options
 
 | Option            | Parameter   | Description |
-|-------------------|-------------|-------------|
+|:------------------|:------------|:------------|
 | --count, -c       |   number    | Number of files to create (default: 1) |
 | --help, -h        |             | Display help output and exit |
 | --path, -p        |   file path | Output path for where files are created (required)|
