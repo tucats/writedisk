@@ -7,15 +7,27 @@ import (
 )
 
 func formatSize(size int) string {
+	var text, scale string
+
 	if size >= gigabytes {
-		return fmt.Sprintf("%.2f GB", float64(size)/gigabytes)
+		text = fmt.Sprintf("%.2f", float64(size)/gigabytes)
+		scale = "GB"
 	} else if size >= megabytes {
-		return fmt.Sprintf("%.2f MB", float64(size)/megabytes)
+		text = fmt.Sprintf("%.2f", float64(size)/megabytes)
+		scale = "MB"
 	} else if size >= kilobytes {
-		return fmt.Sprintf("%.2f KB", float64(size)/kilobytes)
+		text = fmt.Sprintf("%.2f", float64(size)/kilobytes)
+		scale = "KB"
 	} else {
-		return fmt.Sprintf("%d bytes", size)
+		text = fmt.Sprintf("%d", size)
+		scale = "B"
 	}
+
+	if strings.HasSuffix(text, ".00") {
+		text = strings.TrimSuffix(text, ".00")
+	}
+
+	return text + scale
 }
 
 func parseSize(s string) (int, error) {
