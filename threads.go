@@ -1,16 +1,14 @@
 package main
 
 import (
-	"crypto/rand"
 	"fmt"
-	"math/big"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
 )
 
-func runThreads(path string, threadCount int, fileCount int, fileSize int, logging bool) {
+func runThreads(path string, threadCount int, fileCount int, fileSize int, startValue int, logging bool) {
 	var wg sync.WaitGroup
 
 	start := time.Now()
@@ -40,14 +38,7 @@ func runThreads(path string, threadCount int, fileCount int, fileSize int, loggi
 
 	fmt.Printf("Launching %d write operation threads...\n", threadCount)
 
-	// Create a buffer with all possible byte values. The buffer simply increments,
-	// but starts with a random value so two files generated with different commands
-	// are unlikely to have the same content.
-	startValue := 0
-	if start, err := rand.Int(rand.Reader, big.NewInt(256)); err != nil {
-		startValue = int(start.Int64())
-	}
-
+	// Create a buffer with all possible byte values from the given start value.
 	buffer := make([]byte, fileSize)
 	for i := 0; i < fileSize; i++ {
 		buffer[i] = byte((i + startValue) % 256)

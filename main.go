@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
+	"math/big"
 	"os"
 	"runtime"
 	"strconv"
@@ -33,10 +35,18 @@ func main() {
 	threadCount := runtime.NumCPU() * 2
 	maxThreads := runtime.NumCPU() * 10
 
+	startValue := 0
+	if start, err := rand.Int(rand.Reader, big.NewInt(256)); err != nil {
+		startValue = int(start.Int64())
+	}
+
 	for i := 1; i < len(os.Args); i++ {
 		arg := os.Args[i]
 
 		switch arg {
+		case "--static":
+			startValue = 0
+
 		case "--count", "-c":
 			count, err = strconv.Atoi(os.Args[i+1])
 			if err != nil {
@@ -99,6 +109,7 @@ func main() {
 			fmt.Println("  --count, -c <number>:   Number of files to create (default: 1)")
 			fmt.Println("  --path, -p <path>   :   Output path for the files (required)")
 			fmt.Println("  --size, -s <size>   :   Size of each file in bytes (default: 10MB)")
+			fmt.Println("  --static            :   Use a static start value for the data of 0x00 (default: random)")
 			fmt.Println("  --threads, -s <num> :   Number of threads to use (default: twice the number of CPU cores)")
 			fmt.Println("  --verbose, -v       :   Enable logging")
 			os.Exit(0)
@@ -126,5 +137,5 @@ func main() {
 
 	fmt.Printf("Writing %d files, for a total size of %s\n", count, formatSize(count*size))
 
-	runThreads(path, threadCount, count, size, logging)
+	runThreads(path, threadCount, count, size, startValue, logging)
 }
